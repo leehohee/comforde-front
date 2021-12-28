@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
         status:{
             type:DataTypes.STRING(40),
             allowNull:true,
+        },
+        date:{
+            type:DataTypes.STRING(40),
+            allowNull:true,
         }
     }, {
         charset:'utf8mb4',
@@ -18,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Order.associate = (db) => {
         db.Order.belongsTo(db.User); //UserId, Post.addUser, Post.setUser, Post.getUser, Post.removeUser
-        
+        db.Order.hasMany(db.Item);
         
         
         

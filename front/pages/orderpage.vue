@@ -19,21 +19,16 @@
                         size="98"
                         tile
                     >
-                        <v-img
-                        src="https://d2v80xjmx68n4w.cloudfront.net/gigs/QbVBu1625654810.jpg"
-                        max-height="98"
-                        ></v-img>
+                    <PostImages :images="mainItems[0].Images || []" />    
                     </v-avatar>
                     <div class="pl-3">
-                        <v-card-subtitle
-                        
-                        v-text="'미술, 디자인, 작가가 모여 감각적인 로고 제작해 드립니다.'"
-                        ></v-card-subtitle>
+                        <v-card-subtitle>
+                            {{mainItems[0].title}}
+                        </v-card-subtitle>
                         <br>
-                        <v-card-subtitle
-                        
-                        v-text="'로고고디자인'"
-                        ></v-card-subtitle>
+                        <v-card-subtitle>
+                            {{mainItems[0].User.nickname}}
+                        </v-card-subtitle>
                         <v-row
                         align="center"
                         class="ml-n1 mt-2"
@@ -54,44 +49,10 @@
                 </v-card>
               
             </v-row>
-            <v-row class="mt-10">
-              <v-card elevation="0" width="100%" fluid>
-                <div class="d-flex justify-space-between">
-                <span>워드마크/심볼/엠블럼형 로고 X 1</span><span>11,000원</span>
-                </div>
-                <v-card elevation="0" flat tile class="mt-10">
-                    시안개수:2개<br>
-                    원본파일 제공<br>
-                    고해상도 파일 제공<br>
-                    응용 디자인<br>
-                    상업적 이용 가능<br>
-                </v-card>
-                
-              </v-card>
-              
-              
-
-            </v-row>
+            
             <v-row width="100" class="mt-10">
                 <v-card elevation="0" width="100%">
-                    <h4>결제 금액</h4>
-                    <v-autocomplete class="mt-1" outlined label="사용 가능한 쿠폰 없음"></v-autocomplete>
-                    <v-row>
-                    <v-col
-                    cols="8"
                     
-                    
-                    >
-                    <v-text-field
-                        label="보유캐시 : 0원"
-                        placeholder="Placeholder"
-                        outlined
-                    ></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-btn large class="grey">전액사용</v-btn>
-                    </v-col>
-                    </v-row>
 
                     <v-row>
                     <v-col
@@ -102,35 +63,11 @@
                     <h5>총 서비스 금액</h5>
                     </v-col>
                     <v-col cols="4" class="text-right">
-                    <h5>11,000 원</h5>
+                    <h5>{{mainItems[0].cost.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}} 원</h5>
                     </v-col>
                     </v-row>
 
-                    <v-row>
-                    <v-col
-                    cols="8"
                     
-                    
-                    >
-                    <h5>쿠폰 할인</h5>
-                    </v-col>
-                    <v-col cols="4" class="text-right">
-                    <h5>0 원</h5>
-                    </v-col>
-                    </v-row>
-
-                    <v-row>
-                    <v-col
-                    cols="8"
-                    
-                    
-                    >
-                    <h5>캐시 사용</h5>
-                    </v-col>
-                    <v-col cols="4" class="text-right">
-                    <h5>0 원</h5>
-                    </v-col>
-                    </v-row>
 
                     <v-row>
                     <v-col
@@ -141,38 +78,13 @@
                     <h5>총 결제 금액</h5>
                     </v-col>
                     <v-col cols="4" class="text-right">
-                    <h4>11,000 원</h4>
+                    <h4>{{mainItems[0].cost.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}} 원</h4>
                     </v-col>
                     </v-row>
                 </v-card>
             </v-row>
             
-            <v-row width="100" class="mt-10">
-                <v-card elevation="0" width="100%">
-                    <h4>결제 방법</h4>
-                    <v-row class="mt-1 d-flex flex-wrap">
-                        <v-col col="4">
-                            <v-btn width="100" outlined>신용카드</v-btn>
-                        </v-col>
-                        <v-col col="4">
-                            <v-btn width="100" outlined>계좌이체</v-btn>
-                        </v-col>
-                        <v-col col="4">
-                            <v-btn width="100" outlined>무통장입금</v-btn>
-                        </v-col>
-                        <v-col col="4">
-                            <v-btn width="100" outlined>휴대폰</v-btn>
-                        </v-col>
-                        <v-col col="4">
-                            <v-btn width="100" outlined>페이코</v-btn>
-                        </v-col>
-                        <v-col col="4">
-                            <v-btn width="100" outlined>카카오페이</v-btn>
-                        </v-col>
-                        
-                    </v-row>
-                </v-card>
-            </v-row>
+            
 
             <v-row width="100" class="mt-12">
                 <v-card elevation="0" width="100%">
@@ -186,13 +98,17 @@
             </v-row>
             <v-row width="100%">
                 <v-checkbox
+                @click="onClick"
+                required
                 v-model="checkbox"
                 label="주문 내용을 확인하였으며, 결제에 동의합니다. (필수)"
                 ></v-checkbox>
                 <v-col cols="12">
                 <v-row width="100%">
                     <v-col width="100%">
-                        <v-btn @click="buyItem" width="100%" class="yellow">11,000원 결제하기</v-btn>
+                        <v-btn @click="buyItem" width="100%" class="yellow">
+                            {{mainItems[0].cost.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}}원 결제하기
+                            </v-btn>
                     </v-col>
                 </v-row>
                 </v-col>
@@ -208,23 +124,33 @@
 </template>
 
 <script>
+import PostImages from '~/components/PostImages';
 export default {
     layout:'orderdefault',
+    components:{
+        PostImages,
+    },
+    computed: {
+        mainItems(){
+            return this.$store.state.posts.mainItems;
+        },
+        
+    },
     methods:{
         buyItem(){
           window.BootPay.request({
-            price: '11000', //실제 결제되는 가격
+            price: this.mainItems[0].cost, //실제 결제되는 가격
             application_id: "619e506ce38c30001ed2bbeb",
-            name: '테스트디자인', //결제창에서 보여질 이름
+            name: this.mainItems[0].title, //결제창에서 보여질 이름
             
            
             show_agree_window: 0, // 부트페이 정보 동의 창 보이기 여부
             items: [
                 {
-                    item_name: '테스트디자인', //상품명
+                    item_name: this.mainItems[0].title, //상품명
                     qty: 1, //수량
                     unique: '1', //해당 상품을 구분짓는 primary key
-                    price: 11000, //상품 단가
+                    price: this.mainItems[0].cost, //상품 단가
                     cat1: '로고', // 대표 상품의 카테고리 상, 50글자 이내
                     
                 }
@@ -264,6 +190,10 @@ export default {
             console.log(data);
         });
         },
+
+        onClick(){
+            console.log(this.mainItems);
+        }
     }
 }
 </script>

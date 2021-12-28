@@ -7,7 +7,7 @@
       <v-col>
         <div class="text-right mt-3">
           <h5 class="mt-2">
-            <a href="#">모두보기 ></a>
+            <nuxt-link to="likepage"> 모두보기 ></nuxt-link>
           </h5>
         </div>
       </v-col>
@@ -21,7 +21,7 @@
           show-arrows
         >
           <v-slide-item
-            v-for="(item, i) in item2s"
+            v-for="(item, i) in likeItems"
             :key="i"
             v-slot="{ toggle }"
             show-arrows="false"
@@ -34,12 +34,13 @@
               elevation="0"
               @click="toggle"
               nuxt
-              to="/detailpage"
+              :to="'/item/' + item.id"
             >
               <v-list-item dense class="px-1 my-0" two-line>
                 <v-list-item-content>
                   <v-avatar class="ma-0 pa-0" size="108" tile>
-                    <v-img :src="item.src" max-width="145" contain></v-img>
+                    
+                    <v-img :src="`http://localhost:3065/${item.Images[0].src}`" max-width="145" contain></v-img>
                   </v-avatar>
                   <v-list-item-subtitle
                     dense
@@ -48,7 +49,7 @@
                   >
                   </v-list-item-subtitle>
                   <v-list-item-subtitle class="pt-1">
-                    <span style="fontweight: 900">11,000 원</span>
+                    <span style="fontweight: 900"><v-btn @click="onClick">{{item.cost}}</v-btn></span>
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -118,6 +119,26 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    me() {
+      return this.$store.state.users.me;
+    },
+    likeItems(){
+        return this.$store.state.posts.likeItems;
+    },
+  },
+  fetch({store}){
+        //fetch는 보통 store 넣을때 많이 쓴다.
+        return store.dispatch('posts/loadLikeItems', { 
+          userId : store.state.users.me.id,
+          reset: true
+        });
+  },
+  methods:{
+        onClick(){
+            console.log(this.likeItems);
+        }
   },
 };
 </script>

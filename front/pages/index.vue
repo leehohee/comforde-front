@@ -16,8 +16,13 @@
         </v-carousel>
 
         <CategoryMenu />
-
-        <LikeServiceMenu />
+        
+        <LikeServiceMenu v-if="me"/>
+        <v-row>
+        <v-col>
+            <div class="mt-3"><h3>추천 서비스</h3></div>
+        </v-col>
+        </v-row>
         <RecommendListMenu :mainItems="mainItems"/>
         <MainFooterMenu />
         
@@ -62,10 +67,11 @@ export default {
         
       }
     },
-    fetch({store}){  //fetch는 보통 store 넣을때 많이 쓴다.
-        return store.dispatch('posts/loadItems', { reset: true});
-    },
+    
     computed:{
+        me(){
+            return this.$store.state.users.me;
+        },
         height (){
             switch (this.$vuetify.breakpoint.name){
                 case 'xs' : return 100
@@ -79,15 +85,20 @@ export default {
 
         
     },
+    fetch({store}){  //fetch는 보통 store 넣을때 많이 쓴다.
+        return store.dispatch('posts/loadItems', { reset: true});
+    },
     created() {
-        
+        this.$store.dispatch('posts/loadItems', { reset: true});
     },
     beforeDestroy() {
         
         
     },
     methods:{
-        
+        onClick(){
+            console.log(this.mainItems);
+        }
     },
 }
 </script>

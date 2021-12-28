@@ -27,6 +27,11 @@ router.post('/images',isLoggedIn, upload.array('image'),(req,res) => {
     res.json(req.files.map(v => v.filename));
 });
 
+router.post('/image2s',isLoggedIn, upload.array('image'),(req,res) => {
+    console.log(req.files);
+    res.json(req.files.map(v => v.filename));
+});
+
 
 router.post('/', isLoggedIn, async (req, res, next) => {
     try{
@@ -73,6 +78,113 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     }
 });
 
+router.post('/item', isLoggedIn, async (req, res, next) => {
+    try{
+        const categoryName = await db.Category.findOne({
+            where:{
+
+                name : req.body.category,
+            },
+        });
+        
+        const newPost = await db.Item.create({
+            content: req.body.content,
+            modify:req.body.modify,
+            cost:req.body.cost,
+            title:req.body.title,
+            status:1,
+            CategoryId:categoryName.id,
+            UserId: req.user.id,
+        });
+        
+        if (req.body.image){
+            if(Array.isArray(req.body.image)){
+                await Promise.all(req.body.image.map((image)=>{
+                    return db.Image.create({ src: image, ItemId: newPost.id}); //await안붙으면 promise다
+                }));
+            } else {
+                await db.Image.create({src:req.body.image, ItemId: newPost.id});
+            }
+        }
+        if (req.body.image2){
+            if(Array.isArray(req.body.image2)){
+                await Promise.all(req.body.image2.map((image)=>{
+                    return db.Image2.create({ src: image, ItemId: newPost.id}); //await안붙으면 promise다
+                }));
+            } else {
+                await db.Image2.create({src:req.body.image2, ItemId: newPost.id});
+            }
+        }
+        const fullPost = await db.Item.findOne({
+            where: {
+                id: newPost.id
+            },
+            include:[{
+                model: db.User, // 시퀄라이즈의 엄청 좋은 기능, 이 게시글 쓴 사람 가져오기
+                attributes:['id', 'nickname'], //다 가져오진 말고 아이디랑 닉네임만 가져오도록
+            },{
+                model: db.Image, //이미지까지 합쳐서 보내준다.
+            },{
+                model: db.Image2,
+            },{
+                model : db.User,
+                as : 'Itemlikers',
+                attributes: ['id'],
+            }],
+        });
+        return res.json(fullPost);
+    } catch(err){
+        console.error(err);
+        next(err);
+    }
+});
+
+router.post('/chat', isLoggedIn, async (req, res, next) => {
+    try{
+        
+        const newChat = await db.Message.create({
+            content: req.body.content,
+            SenderId: req.body.senderId,
+            ReceiverId : req.body.receiverId,
+        });
+        
+        const fullChat = await db.Message.findOne({
+            where: {
+                id: newChat.id
+            },
+            
+        });
+        return res.json(fullChat);
+    } catch(err){
+        console.error(err);
+        next(err);
+    }
+});
+router.post('/:id/chat', isLoggedIn, async (req,res, next) => {
+    try {
+        const chat = await db.Message.findOne({where:{ Senderid: req.user.id}});
+        if (!chat){
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+        const fullChat = await db.Message.findAll({
+            where: {
+
+                [db.Sequelize.Op.or] : [
+                    {Senderid: req.user.id, ReceiverId: req.params.id},
+                    {Senderid: req.params.id, ReceiverId:req.user.id }
+                ]
+                
+            },
+            order: [['createdAt', 'ASC']],
+        });
+        return res.json(fullChat);
+    }catch(e){
+        console.error(e);
+        next(e);
+    }
+});
+
+
 router.post('/house', isLoggedIn, async (req, res, next) => {
     try{
         
@@ -109,35 +221,23 @@ router.post('/selecthouse', isLoggedIn, async (req, res, next) => {
     }
 });
 
-router.post('/selectimage', isLoggedIn, async (req, res, next) => {
+router.post('/category', isLoggedIn, async (req, res, next) => {
     try{
         
-        const newPost = await db.Post.create({
+        const newCategory = await db.Category.create({
             
-            UserId: req.user.id,
+            name: req.body.content,
+
+
         });
         
             
-        await newPost.addHashtags(req.body.id);  
+        
             
         
         
-        const fullPost = await db.Post.findOne({
-            where: {
-                id: newPost.id
-            },
-            include:[{
-                model: db.User, // 시퀄라이즈의 엄청 좋은 기능, 이 게시글 쓴 사람 가져오기
-                attributes:['id', 'nickname'], //다 가져오진 말고 아이디랑 닉네임만 가져오도록
-            },{
-                model: db.Image, //이미지까지 합쳐서 보내준다.
-            },{
-                model : db.User,
-                as : 'Likers',
-                attributes: ['id'],
-            }],
-        });
-        return res.json(fullPost);
+        
+        return res.json(newCategory);
     } catch(err){
         console.error(err);
         next(err);
@@ -181,6 +281,34 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
+router.get('/:id/item', async (req, res, next) => {
+    try {
+        const item = await db.Item.findOne({
+        where: { id: req.params.id },
+        include: [{
+            model: db.User,
+            attributes: ['id', 'nickname'],
+        }, {
+            model: db.Image,
+        }, {
+            model: db.Image2,
+        },{
+            model: db.User,
+            as: 'Itemlikers',
+            attributes: ['id'],
+        }, {
+            model: db.Category,
+            attributes: ['name'],
+        }
+        ],
+        });
+        res.json(item);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+});
+
 router.delete('/:id', async (req, res, next)=>{
     try {
         await db.Post.destroy({
@@ -212,6 +340,23 @@ router.get('/:id/comments', async (req, res, next) => {
             order: [['createdAt', 'ASC']],
         });
         return res.json(comments);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+});
+router.get('/:id/userlikeitem', async (req, res, next) => {
+    try {
+        const user = await db.User.findOne({where:{ id: req.params.id}});
+        
+        const items = await user.getItemliked({
+            include: [{
+                    model:db.Image,
+                }
+            ]
+        }); 
+        
+        return res.json(items);
     } catch (err) {
         console.error(err);
         next(err);
@@ -328,6 +473,32 @@ router.delete('/:id/like', isLoggedIn, async (req,res, next) => {
         next(e);
     }
 });
+router.post('/:id/itemlike', isLoggedIn, async (req,res, next) => {
+    try {
+        const post = await db.Item.findOne({where:{ id: req.params.id}});
+        if (!post){
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+        await post.addItemliker(req.user.id);  //시퀄라이즈가 이런면에서 표현력이 좋다.
+        res.json({ userId: req.user.id});
+    }catch(e){
+        console.error(e);
+        next(e);
+    }
+});
 
+router.delete('/:id/itemlike', isLoggedIn, async (req,res, next) => {
+    try{
+        const post = await db.Item.findOne({where:{ id: req.params.id}});
+        if (!post){
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+        await post.removeItemliker(req.user.id);  //시퀄라이즈가 이런면에서 표현력이 좋다.
+        res.json({ userId: req.user.id});
+    }catch(e){
+        console.error(e);
+        next(e);
+    }
+});
 
 module.exports = router;

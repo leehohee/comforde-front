@@ -40,6 +40,8 @@ router.get('/:id', async(req,res, next)=>{
 
 router.post('/', isNotLoggedIn, async (req,res,next) => {
     try{
+
+        console.log('여기까지오니?');
         const hash = await bcrypt.hash(req.body.password, 12);
         const exUser = await db.User.findOne({
             where:{email : req.body.email,}
@@ -51,11 +53,20 @@ router.post('/', isNotLoggedIn, async (req,res,next) => {
             });
         }
         await db.User.create({
+
+
+
         
             email: req.body.email,
             password: hash,
             nickname: req.body.nickname,
-        
+            status:req.body.status,
+
+
+
+
+
+
         });
         passport.authenticate('local', (err, user, info)=>{
             if(err){
@@ -72,7 +83,7 @@ router.post('/', isNotLoggedIn, async (req,res,next) => {
                 }
                 const fullUser = await db.User.findOne({
                     where: { id: user.id },
-                    attributes: ['id', 'email', 'nickname'],
+                    attributes: ['id', 'email', 'nickname','status'],
                     include: [{
                       model: db.Post,
                       attributes: ['id'],
@@ -97,7 +108,7 @@ router.post('/', isNotLoggedIn, async (req,res,next) => {
 });
 
 
-router.post('/login', isNotLoggedIn, (req,res,next)=>{
+router.post('/login', (req,res,next)=>{
     passport.authenticate('local', (err, user, info)=>{
         if(err){
             console.error(err);
@@ -113,7 +124,7 @@ router.post('/login', isNotLoggedIn, (req,res,next)=>{
             }
             const fullUser = await db.User.findOne({
                 where: { id: user.id },
-                attributes: ['id', 'email', 'nickname'],
+                attributes: ['id', 'email', 'nickname','status'],
                 include: [{
                   model: db.Post,
                   attributes: ['id'],
@@ -160,6 +171,37 @@ router.get('/:id/posts', async (req,res,next)=>{
             model: db.User,
             through: 'Like',
             as: 'Likers',
+            attributes: ['id'],
+            }],
+        });
+        res.json(posts);
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+});
+router.get('/:id/category', async (req,res,next)=>{
+    try {
+        let where = {
+            CategoryId: parseInt(req.params.id, 10),
+            
+        };
+        if (parseInt(req.query.lastId, 10)) {
+            where[db.Sequelize.Op.lt] = parseInt(req.query.lastId, 10);
+        }
+        const posts = await db.Item.findAll({
+            where,
+            include: [{
+            model: db.User,
+            attributes: ['id', 'nickname'],
+            }, {
+            model: db.Image,
+            }, {
+                model: db.Image2,
+            },{
+            model: db.User,
+            through: 'Like3',
+            as: 'Itemlikers',
             attributes: ['id'],
             }],
         });

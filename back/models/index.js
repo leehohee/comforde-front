@@ -11,6 +11,7 @@ db.Comment = require('./comment')(sequelize, Sequelize);
 db.Hashtag = require('./hashtag')(sequelize, Sequelize); 
 db.Hashtag2 = require('./hashtag2')(sequelize, Sequelize); 
 db.Image = require('./image')(sequelize, Sequelize); 
+db.Image2 = require('./image2')(sequelize, Sequelize); 
 db.Item = require('./item')(sequelize, Sequelize); 
 db.Order = require('./order')(sequelize, Sequelize); 
 db.Category = require('./category')(sequelize, Sequelize); 

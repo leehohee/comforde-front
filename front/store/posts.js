@@ -7,8 +7,11 @@ export const state = () => ({
     main3Posts:[],
     hasMorePost: true,
     imagePaths:[],
+    image2Paths:[],
     mainItems:[],
     searchItems:[],
+    chatList:[],
+    likeItems:[],
     
 });
 
@@ -21,8 +24,17 @@ export const mutations = {
         state.imagePaths = [];
     },
     addItem(state, payload) {
-        state.mainItems.unshift(payload);
+        
         state.imagePaths = [];
+    },
+    chatSend(state, payload) {
+        state.chatList.push(payload);
+        console.log(state.chatList);
+    },
+    chatGet(state, payload) {
+        
+        state.chatList = payload;
+        console.log(state.chatList);
     },
     add2MainPost(state, payload) {
         console.log(payload);
@@ -45,13 +57,20 @@ export const mutations = {
         const index = state.mainPosts.findIndex(v => v.id === payload.postId);
         Vue.set(state.mainPosts[index],'Comments', payload.data);
     },
+    loadLikeItems(state,payload){
+        state.likeItems = payload.data;
+    },
     addComment(state, payload){
         const index = state.mainPosts.findIndex(v => v.id === payload.PostId);
         state.mainPosts[index].Comments.unshift(payload);
     },
     loadPost(state, payload) {
-        state.mainPosts = [payload];
-        console.log(state.mainPosts[0]);
+        state.mainItems = [payload];
+        
+    },
+    loadItem(state, payload) {
+        state.mainItems = [payload];
+        
     },
     loadPosts(state, payload){
         if (payload.reset) {
@@ -88,6 +107,12 @@ export const mutations = {
     removeImagePath(state, payload){
         state.imagePaths.splice(payload, 1);
     },
+    concatImage2Paths(state,payload){
+        state.image2Paths = state.image2Paths.concat(payload); //추가로 이미지 업로드하는 경우를 대비
+    },
+    removeImage2Path(state, payload){
+        state.image2Paths.splice(payload, 1);
+    },
     unlikePost( state, payload){
         const index = state.mainPosts.findIndex(v => v.id === payload.postId);
         const userIndex = state.mainPosts[index].Likers.findIndex(v => v.id === payload.userId);
@@ -96,6 +121,17 @@ export const mutations = {
     likePost(state, payload){
         const index = state.mainPosts.findIndex(v => v.id === payload.postId);
         state.mainPosts[index].Likers.push({
+            id : payload.userId,
+        });
+    },
+    unlikeItem( state, payload){
+        const index = state.mainItems.findIndex(v => v.id === payload.itemId);
+        const userIndex = state.mainItems[index].Itemlikers.findIndex(v => v.id === payload.userId);
+        state.mainItems[index].Itemlikers.splice(userIndex, 1);
+    },
+    likeItem(state, payload){
+        const index = state.mainItems.findIndex(v => v.id === payload.itemId);
+        state.mainItems[index].Itemlikers.push({
             id : payload.userId,
         });
     },
@@ -122,8 +158,10 @@ export const actions = {
         //서버에 게시글 등록 요청 보냄
         this.$axios.post('/post/item',{
             content: payload.content,
+            title:payload.title,
             modify:payload.modify,
             image: state.imagePaths,
+            image2: state.image2Paths,
             cost:payload.cost,
             category:payload.category,
         },{
@@ -150,6 +188,45 @@ export const actions = {
         })
             .then((res)=>{
                 commit('add2MainPost', res.data);
+            })
+            .catch((err)=>{
+                console.error(err);
+            })
+        
+    },
+    chatSend({ commit, state }, payload){
+        //서버에 게시글 등록 요청 보냄
+        
+        this.$axios.post('/post/chat',{
+
+            content: payload.content,
+            receiverId:payload.receiverId,
+            senderId:payload.senderId,
+
+
+        },{
+            withCredentials: true,
+        })
+            .then((res)=>{
+                commit('chatSend', res.data);
+              
+            })
+            .catch((err)=>{
+                console.error(err);
+            })
+        
+    },
+    chatGet({ commit, state }, payload){
+        //서버에 게시글 등록 요청 보냄
+        console.log(payload);
+        this.$axios.post(`/post/${payload}/chat`,{
+            
+        },{
+            withCredentials: true,
+        })
+            .then((res)=>{
+                commit('chatGet', res.data);
+                console.log(res.data);
             })
             .catch((err)=>{
                 console.error(err);
@@ -285,10 +362,32 @@ export const actions = {
                 console.error(err);
             });
     },
+    loadLikeItems({commit, state}, payload){
+        
+        this.$axios.get(`/post/${payload.userId}/userlikeitem`)
+            .then((res)=>{
+                console.log(res.data);
+                commit('loadLikeItems', {
+                    userId: payload.userId,
+                    data: res.data,
+                });
+            })
+            .catch((err)=>{
+                console.error(err);
+            });
+    },
     async loadPost({ commit, state }, payload) {
         try {
             const res = await this.$axios.get(`/post/${payload}`);
             commit('loadPost', res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    async loadItem({ commit, state }, payload) {
+        try {
+            const res = await this.$axios.get(`/post/${payload}/item`);
+            commit('loadItem', res.data);
         } catch (err) {
             console.error(err);
         }
@@ -374,6 +473,28 @@ export const actions = {
             }
         }
     }, 2000),
+    loadCategoryItems : throttle(async function({ commit, state },payload){
+        if (payload && payload.reset) {
+            const res = await this.$axios.get(`/user/${payload.CategoryId}/category?limit=10`);
+            commit('loadItems', {
+              data: res.data,
+              reset: true,
+            });
+            return;
+        }
+        if(state.hasMorePost){
+            try {
+            const lastPost = state.mainItems[state.mainItems.length - 1];
+            const res = this.$axios.get(`user/${payload.CategoryId}/category?lasId=${lastPost && lastPost.id}&limit=10`);
+            commit('loadItems', {
+                data: res.data,
+            });
+            return ;
+            } catch(err){
+                console.error(err);
+            }
+        }
+    }, 2000),
     loadHashtagPosts: throttle(async function({ commit, state }, payload) {
         try {
             if (payload && payload.reset) {
@@ -402,6 +523,17 @@ export const actions = {
         })
             .then((res)=>{
                 commit('concatImagePaths', res.data);
+            })
+            .catch((err)=>{
+                console.error(err);
+            });
+    },
+    uploadImage2s({commit}, payload){
+        this.$axios.post('/post/image2s', payload,{
+            withCredentials: true,
+        })
+            .then((res)=>{
+                commit('concatImage2Paths', res.data);
             })
             .catch((err)=>{
                 console.error(err);
@@ -441,6 +573,34 @@ export const actions = {
             commit('unlikePost', {
                 userId: res.data.userId,
                 postId: payload.postId,
+            });
+        })
+        .catch((err)=>{
+            console.error(err);
+        });
+    },
+    likeItem({commit},payload){
+        this.$axios.post(`/post/${payload.itemId}/itemlike`, {}, {
+            withCredentials:true,
+        })
+        .then((res)=>{
+            commit('likeItem', {
+                userId: res.data.userId,
+                itemId: payload.itemId,
+            });
+        })
+        .catch((err)=>{
+            console.error(err);
+        });
+    },
+    unlikeItem({commit},payload){
+        this.$axios.delete(`/post/${payload.itemId}/itemlike`, {  //delete할때는 두번째가 지워줘야함 데이터가 없음
+            withCredentials:true,
+        })
+        .then((res)=>{
+            commit('unlikeItem', {
+                userId: res.data.userId,
+                itemId: payload.itemId,
             });
         })
         .catch((err)=>{

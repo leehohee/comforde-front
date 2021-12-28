@@ -113,20 +113,20 @@
             grow
             
             >
-                <v-btn outlined nuxt to="/" value="home" class="white">
-                <span :style="{ fontSize:'1rem'}"><nuxt-link to="/">문의</nuxt-link></span>
+                <v-btn outlined @click="onClick" value="home" class="white">
+                <span :style="{ fontSize:'1rem'}">문의</span>
                 
                 </v-btn>
                 <v-btn rounded nuxt to="/" value="home" class="yellow">
-                <span :style="{ fontSize:'1rem'}"><nuxt-link to="/buypage">구매</nuxt-link></span>
+                <span :style="{ fontSize:'1rem'}"><nuxt-link to="/orderpage">구매</nuxt-link></span>
                 
                 </v-btn>
 
                 
 
-                <v-btn nuxt to="/profile" value="user" class="white">
+                <v-btn @click="onClickHeart" value="user" class="white">
                 
-                <v-icon>mdi-heart-outline</v-icon>
+                <v-icon>{{heartIcon}}</v-icon>
                 </v-btn>
             </v-bottom-navigation>
             </v-footer>    
@@ -148,7 +148,22 @@ export default {
             drawer: false,    
         };
     },
-    
+    computed: {
+        me(){
+            return this.$store.state.users.me;
+        },
+        mainItems(){
+            return this.$store.state.posts.mainItems.find(v => v.id === parseInt(this.$route.params.id, 10));
+        },
+        liked(){
+            const me = this.$store.state.users.me;
+            return !!(this.mainItems.Itemlikers || []).find(v => v.id === (me && me.id));
+        },
+        heartIcon(){
+            
+            return this.liked ? 'mdi-heart' : 'mdi-heart-outline';
+        },
+    },
     
     methods:{
         onSerachHashtag(){
@@ -159,6 +174,27 @@ export default {
         },
         goBack(){
             this.$router.go(-1); [2]
+        },
+        onClick(){
+            console.log(this.mainItems.UserId);
+            this.$router.push({
+                path: `/chat/${encodeURIComponent(this.mainItems.UserId)}`,
+            });
+        },
+        onClickHeart(){
+            if(!this.me){
+                return alert('로그인이 필요합니다.');
+            }
+            if(this.liked){
+                return this.$store.dispatch('posts/unlikeItem', {
+                    itemId: this.mainItems.id,
+                });
+            
+            }
+            return this.$store.dispatch('posts/likeItem', {
+                    itemId: this.mainItems.id,
+            });
+
         },
     },
 
@@ -171,7 +207,15 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap');
 
-
+@font-face {
+    font-family: 'YdestreetB';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+  font-family: "YdestreetB";
+}
     a {
         display:inline-block;
         text-decoration: none;
@@ -185,7 +229,7 @@ export default {
         text-decoration: none;
     }
     h4 {
-        font-family: 'Noto Sans KR';
+        
         font-weight: 500;
     }
     

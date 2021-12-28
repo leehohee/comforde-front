@@ -1,10 +1,6 @@
 <template>
   <div width="300">
-    <v-row>
-      <v-col>
-        <div class="mt-3"><h3>추천 서비스</h3></div>
-      </v-col>
-    </v-row>
+    
     <v-row>
       <v-col v-for="(item, i) in mainItems" :key="i">
         <v-card
@@ -13,14 +9,14 @@
           class="pa-0 ma-0"
           elevation="0"
           nuxt
-          to="/detailpage"
+          :to="'/item/' + item.id"
         >
           <div class="d-flex">
             <v-avatar class="ma-0" size="98" tile>
-              <v-img src="~/assets/placard.png" max-height="98"></v-img>
+              <PostImages :images="item.Images || []" />
             </v-avatar>
             <div class="pl-3">
-              <v-card-subtitle>{{item.content}}</v-card-subtitle>
+              <v-card-subtitle>{{item.title}}</v-card-subtitle>
 
               <v-row align="center" class="ml-n1 mt-2">
                 <v-rating
@@ -49,8 +45,11 @@
 </template>
 
 <script>
+import PostImages from './PostImages';
 export default {
-
+    components:{
+        PostImages,
+    },
     props: {
         mainItems: {
             type: Object,

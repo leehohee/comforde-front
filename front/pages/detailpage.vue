@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-img
-        lazy-src="https://picsum.photos/id/11/10/6"
+        
         
         max-width="100%"
         src="https://d2v80xjmx68n4w.cloudfront.net/gigs/QbVBu1625654810.jpg"
@@ -457,14 +457,14 @@
             <v-row></v-row>
 
         </v-container>
-
+      
     </div>
 
 </template>
 
 <script>
 export default {
-    layout:'detaildefault',
+    layout:'orderdefault',
     data () {
       return {
         items: [

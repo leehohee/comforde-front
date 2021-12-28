@@ -1,38 +1,39 @@
 <template>
     <div v-if="images.length === 0"></div>
-    <div v-else-if="images.length === 1">
-        <v-img
-        :src="`http://localhost:3085/${images[0].src}`"
-        contain
-        aspect-raio="2"
-        @click="zoomImages"
+    <div v-else-if="images.length === 1" height="98">
+        <img
+        :src="`http://localhost:3065/${images[0].src}`"
+        :style="{height:'98px',}"
+        
+        
+        height="98"
         />
         <ImageZoom v-if="imageZoomed" :closeModal="closeModal" :images="images" />
     </div>
     <div v-else-if="images.length === 2" style="display:flex">
         <v-img
-        :src="`http://localhost:3085/${images[0].src}`"
+        :src="`http://localhost:3065/${images[0].src}`"
         contain
         aspect-raio="2"
         style="flex:1"
-        @click="zoomImages"
+        height="98"
         />
         <v-img
-        :src="`http://localhost:3085/${images[1].src}`"
+        :src="`http://localhost:3065/${images[1].src}`"
         contain
         aspect-raio="2"
         style="flex:1"
-        @click="zoomImages"
+        height="98"
         />
         <ImageZoom v-if="imageZoomed" :closeModal="closeModal" :images="images" />
     </div>
     <div v-else-if="images.length > 2" style="display:flex">
         <v-img
-        :src="`http://localhost:3085/${images[0].src}`"
+        :src="`http://localhost:3065/${images[0].src}`"
         contain
         aspect-raio="2"
         style="flex:1"
-        @click="zoomImages"
+        height="98"
         />
         <div style="flex:1;align-items:center; justify-content: center; display:flex" @click="zoomImages">
             <div style="text-align:center">

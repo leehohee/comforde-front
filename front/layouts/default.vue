@@ -192,6 +192,8 @@ export default {
   },
   computed:{
         
+        
+        
         searchItems(){
             return this.$store.state.posts.searchItems;
         },
@@ -226,6 +228,16 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap");
+@import url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2");
+@font-face {
+    font-family: 'YdestreetB';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+  font-family: "YdestreetB";
+}
 
 a {
   display: inline-block;
@@ -240,7 +252,7 @@ li {
   text-decoration: none;
 }
 h4 {
-  font-family: "Noto Sans KR";
+  font-family: "YdestreetB";
   font-weight: 500;
 }
 </style>

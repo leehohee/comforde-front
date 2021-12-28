@@ -13,6 +13,10 @@
             :style="{ position:'fixed', top: '0px',zIndex:'100', width:'100%', marginLeft:'0px'}"
             >
                 
+                    <v-btn v-if="1" @click="goBack" icon :style="{ marginLeft:'0px',paddingLeft:'0px', display:'flex', alignItems: 'center'}">
+                            <v-icon large>mdi-chevron-left</v-icon>
+                    </v-btn>
+                    
                     
                     <v-spacer></v-spacer>
                     
@@ -24,7 +28,9 @@
                     
                     <v-spacer></v-spacer>
                     
-                    
+                    <v-btn icon :style="{ opacity:'0', marginRight:'0px',paddingRight:'0px', display:'flex', alignItems: 'center'}">
+                            <v-icon large>mdi-chevron-left</v-icon>
+                    </v-btn>
                     
                     
                 
@@ -159,6 +165,9 @@ export default {
             });
             this.hashtag='';
         },
+        goBack(){
+            this.$router.go(-1); [2]
+        },
     },
 
     
@@ -170,6 +179,15 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap');
 
+@font-face {
+    font-family: 'YdestreetB';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+  font-family: "YdestreetB";
+}
 
     a {
         display:inline-block;
@@ -184,7 +202,7 @@ export default {
         text-decoration: none;
     }
     h4 {
-        font-family: 'Noto Sans KR';
+        
         font-weight: 500;
     }
     

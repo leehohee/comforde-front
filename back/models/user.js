@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         db.User.hasMany(db.Comment);
         db.User.hasMany(db.Item);
         db.User.hasMany(db.Order);
-        
+        db.User.hasMany(db.Image);
         db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked'}); //시퀄라이즈가 헛갈려해서 하나는 이렇게 명시적으로 설정해줘야함
         db.User.belongsToMany(db.Comment, { through: 'Like2', as: 'Pick'}); //시퀄라이즈가 헛갈려해서 하나는 이렇게 명시적으로 설정해줘야함
         db.User.belongsToMany(db.Item, { through: 'Like3', as: 'Itemliked'}); //시퀄라이즈가 헛갈려해서 하나는 이렇게 명시적으로 설정해줘야함

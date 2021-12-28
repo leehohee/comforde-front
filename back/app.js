@@ -20,7 +20,7 @@ const { ConnectionError } = require('sequelize');
 const app = express();
 
 dotenv.config();
-db.sequelize.sync({force:true}); //{force:true}
+db.sequelize.sync(); //{force:true}
 passportConfig();
 
 

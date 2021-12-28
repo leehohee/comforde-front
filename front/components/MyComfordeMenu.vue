@@ -51,6 +51,7 @@
         <div class="py-5"><h4>컴포디 이용방법</h4></div>
         <div class="py-5"><h4>고객센터</h4></div>
         <div @click="onLogOut" class="py-5"><h4>로그아웃</h4></div>
+        
       </v-card>
     </v-container>
   </div>

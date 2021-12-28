@@ -41,6 +41,8 @@
             v-for="item in items"
             :key="item.title"
             link
+            nuxt to="/chat/1"
+
           >
             
             <v-list-item-avatar>

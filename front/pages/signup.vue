@@ -118,10 +118,16 @@ export default {
         onSubmitForm(){
             if (this.$refs.form.validate()){
                 this.$store.dispatch('users/signUp',{
+
+
+
                     nickname:this.nickname,
                     email:this.email,
                     password:this.password,
                     status:this.status,
+
+
+                    
                 })
                     .then(()=>{
                         this.$router.push({

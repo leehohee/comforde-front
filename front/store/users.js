@@ -90,10 +90,15 @@ export const actions = {
     },
     signUp({ commit, state }, payload) {
         this.$axios.post('/user',{
+
+
             email: payload.email,
             nickname: payload.nickname,
             password:payload.password,
             status:payload.status,
+
+            
+
         },{
             withCredentials:true, //서버가 다를때
         }).then((res)=>{

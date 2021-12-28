@@ -1,5 +1,5 @@
 <template>
-    <v-card elevation="0" min-width="100%" :style="{width:'100%', marginBottom:'40px'}">
+    <v-card elevation="0" min-width="100%" :style="{width:'100%', marginBottom:'100px'}">
         <v-container fluid>
             
             <v-form ref="form" v-model="valid" @submit.prevent="onSubmitForm2">
@@ -12,6 +12,16 @@
                     required
                     dense
                 />
+                <input ref="imageInput" type="file" multiple hidden @change="onChangeImages">
+                <v-btn @click="onClickImageUpload" type="button">대표이미지등록</v-btn>
+                <div class="mt-5">
+                    <div class="mb-2" v-for="(p, i) in imagePaths" :key="p" style="display: inline-block">
+                        <img :src="`http://localhost:3065/${p}`" :alt="p" style="width: 200px">
+                        <div>
+                            <button @click="onRemoveImage(i)" type="button">제거</button>
+                        </div>
+                    </div>
+                </div>
                 <h4>카테고리</h4>
                 <v-select
                 :items="items"
@@ -35,6 +45,16 @@
                     :success="success"
                     @input="onChangeTextarea"
                 />
+                <input ref="image2Input" type="file" multiple hidden @change="onChangeImage2s">
+                <v-btn class="mt-5" @click="onClickImage2Upload" type="button">상세이미지등록</v-btn>
+                <div class="mt-5">
+                    <div class="mb-2" v-for="(p, i) in image2Paths" :key="p" style="display: inline-block">
+                        <img :src="`http://localhost:3065/${p}`" :alt="p" style="width: 200px">
+                        <div>
+                            <button @click="onRemoveImage2(i)" type="button">제거</button>
+                        </div>
+                    </div>
+                </div>
                 <h4 class="mt-5">수정 및 재진행 안내</h4>
                 <v-textarea
                     outlined
@@ -50,16 +70,7 @@
                     :success="success"
                     @input="onChangeTextarea"
                 />
-                <input ref="imageInput" type="file" multiple hidden @change="onChangeImages">
-                <v-btn @click="onClickImageUpload" type="button">이미지등록</v-btn>
-                <div class="mt-5">
-                    <div class="mb-2" v-for="(p, i) in imagePaths" :key="p" style="display: inline-block">
-                        <img :src="`http://localhost:3065/${p}`" :alt="p" style="width: 200px">
-                        <div>
-                            <button @click="onRemoveImage(i)" type="button">제거</button>
-                        </div>
-                    </div>
-                </div>
+                
                 <h4 class="mt-5">취소 및 환불 규정</h4>
                 <div class="pa-1"><h5 class="grey--text">취소 및 환불규정은 판매하시는 서비스의 관련 법령에 따라 일괄 적용됩니다.</h5></div>
                 <h4 class="mt-5">가격설정</h4>
@@ -90,11 +101,12 @@ export default {
             successMessages:'',
             success: false,
             content:'',
+            title:'',
             items: ['로고', '배너', '포스터', '패키지','디테일','비디오'],
             category:'',
             value: 'Hello!',
             cost:'',
-
+            modify:'',
             costRules: [
                 v=> !!v || '가격은 필수입니다.',
                 v => v.length >= 4 || '가격은 1000원 이상이어야 합니다.'
@@ -103,7 +115,8 @@ export default {
     },
     computed:{
         ...mapState('users', ['me']),
-        ...mapState('posts',['imagePaths'])
+        ...mapState('posts',['imagePaths']),
+        ...mapState('posts',['image2Paths']),
     },
     methods:{
         onChangeTextarea(value){
@@ -124,6 +137,7 @@ export default {
                     modify:this.modify,
                     category:this.category,
                     cost:this.cost,
+                    title:this.title,
                     
                 })
                     .then(()=>{
@@ -160,7 +174,23 @@ export default {
         },
         onRemoveImage(index){
             this.$store.commit('posts/removeImagePath', index);
-        }
+        },
+
+        onClickImage2Upload(){
+            this.$refs.image2Input.click();
+        },
+        onChangeImage2s(e){
+            console.log(e.target.files);
+            const image2FormData = new FormData();
+            [].forEach.call(e.target.files, (f)=>{
+                image2FormData.append('image', f);
+            });
+            this.$store.dispatch('posts/uploadImage2s', image2FormData);
+
+        },
+        onRemoveImage2(index){
+            this.$store.commit('posts/removeImage2Path', index);
+        },
     }
 }
 </script>

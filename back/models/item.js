@@ -1,10 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
     const Item = sequelize.define('Item', {
+
         content:{
             type: DataTypes.TEXT, //TEXT는 매우 긴 글
             allowNull:true,
         },
         cost:{
+            type:DataTypes.STRING(40),
+            allowNull:true,
+        },
+        title:{
             type:DataTypes.STRING(40),
             allowNull:true,
         },
@@ -26,11 +31,11 @@ module.exports = (sequelize, DataTypes) => {
     });
     Item.associate = (db) => {
         db.Item.belongsTo(db.User); //UserId, Post.addUser, Post.setUser, Post.getUser, Post.removeUser
-        
+        db.Item.belongsTo(db.Category);
         db.Item.hasMany(db.Image);
-        
+        db.Item.hasMany(db.Image2);
         db.Item.belongsToMany(db.User, { through: 'Like3', as: 'Itemlikers'}); //liked 와 대응되는 likers
-        
+        db.Item.belongsTo(db.Order);
     };
     return Item;
 };

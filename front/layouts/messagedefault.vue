@@ -25,7 +25,7 @@
                     
                     <v-toolbar-title>
                         
-                        <nuxt-link to="/"><h4>전체 메세지</h4></nuxt-link>
+                        <nuxt-link to="/"><h4>메세지</h4></nuxt-link>
                         
                     </v-toolbar-title>
                     
@@ -145,7 +145,15 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap');
 
-
+@font-face {
+    font-family: 'YdestreetB';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+  font-family: "YdestreetB";
+}
     a {
         display:inline-block;
         text-decoration: none;
@@ -159,7 +167,7 @@ export default {
         text-decoration: none;
     }
     h4 {
-        font-family: 'Noto Sans KR';
+        
         font-weight: 500;
     }
     
