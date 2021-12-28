@@ -96,13 +96,13 @@ module.exports = {
 
     ],
     axios:{
-        browserBaseURL: 'http://localhost:3065',
-        baseURL: 'localhost:3065',
+        browserBaseURL: 'http://api.comforde.co.kr',
+        baseURL: 'http://api.comforde.co.kr',
         https: false,
     },
     server:{
         port: process.env.PORT || 80,
-        
+        host: '0.0.0.0'
     },
     
 };
