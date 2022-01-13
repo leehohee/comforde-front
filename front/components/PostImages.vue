@@ -2,7 +2,7 @@
     <div v-if="images.length === 0"></div>
     <div v-else-if="images.length === 1" height="98">
         <img
-        :src="`http://localhost:3065/${images[0].src}`"
+        :src="`http://api.comforde.co.kr/${images[0].src}`"
         :style="{height:'98px',}"
         
         
@@ -12,14 +12,14 @@
     </div>
     <div v-else-if="images.length === 2" style="display:flex">
         <v-img
-        :src="`http://localhost:3065/${images[0].src}`"
+        :src="`http://api.comforde.co.kr/${images[0].src}`"
         contain
         aspect-raio="2"
         style="flex:1"
         height="98"
         />
         <v-img
-        :src="`http://localhost:3065/${images[1].src}`"
+        :src="`http://api.comforde.co.kr/${images[1].src}`"
         contain
         aspect-raio="2"
         style="flex:1"
@@ -29,7 +29,7 @@
     </div>
     <div v-else-if="images.length > 2" style="display:flex">
         <v-img
-        :src="`http://localhost:3065/${images[0].src}`"
+        :src="`http://api.comforde.co.kr/${images[0].src}`"
         contain
         aspect-raio="2"
         style="flex:1"

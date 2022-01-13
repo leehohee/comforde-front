@@ -4,7 +4,7 @@
         
         
         max-width="100%"
-        :src="`http://localhost:3065/${mainItems.Images[0].src}`"
+        :src="`http://api.comforde.co.kr/${mainItems.Images[0].src}`"
         ></v-img>
         <v-container>
             <v-row>
@@ -54,7 +54,7 @@
                     
                     
                     <v-img
-                      :src="`http://localhost:3065/${ mainItems.Image2s.length !== 0 ? mainItems.Image2s[0].src : ''}`"
+                      :src="`http://api.comforde.co.kr/${ mainItems.Image2s.length !== 0 ? mainItems.Image2s[0].src : ''}`"
                       
                     ></v-img>
                     

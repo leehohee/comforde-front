@@ -16,7 +16,7 @@
                 <v-btn @click="onClickImageUpload" type="button">대표이미지등록</v-btn>
                 <div class="mt-5">
                     <div class="mb-2" v-for="(p, i) in imagePaths" :key="p" style="display: inline-block">
-                        <img :src="`http://localhost:3065/${p}`" :alt="p" style="width: 200px">
+                        <img :src="`http://api.comforde.co.kr/${p}`" :alt="p" style="width: 200px">
                         <div>
                             <button @click="onRemoveImage(i)" type="button">제거</button>
                         </div>
@@ -49,7 +49,7 @@
                 <v-btn class="mt-5" @click="onClickImage2Upload" type="button">상세이미지등록</v-btn>
                 <div class="mt-5">
                     <div class="mb-2" v-for="(p, i) in image2Paths" :key="p" style="display: inline-block">
-                        <img :src="`http://localhost:3065/${p}`" :alt="p" style="width: 200px">
+                        <img :src="`http://api.comforde.co.kr/${p}`" :alt="p" style="width: 200px">
                         <div>
                             <button @click="onRemoveImage2(i)" type="button">제거</button>
                         </div>

@@ -40,7 +40,7 @@
                 <v-list-item-content>
                   <v-avatar class="ma-0 pa-0" size="108" tile>
                     
-                    <v-img :src="`http://localhost:3065/${item.Images[0].src}`" max-width="145" contain></v-img>
+                    <v-img :src="`http://api.comforde.co.kr/${item.Images[0].src}`" max-width="145" contain></v-img>
                   </v-avatar>
                   <v-list-item-subtitle
                     dense
