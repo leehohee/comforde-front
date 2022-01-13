@@ -107,7 +107,7 @@
             <v-bottom-navigation
             v-model="value"
             absolute
-            class="white"
+            class="white pt-3"
             :style="{boxShadow: '0 -1.5px 0 0 rgb(0 0 0 / 10%)',paddingRight:'5vw',paddingLeft:'3vw',position:'fixed', top: 'calc(100vh - 56px)',zIndex:'100', width:'100%'}"
             grow
             
@@ -127,12 +127,12 @@
                 <v-icon>mdi-cards-heart-outline</v-icon>
                 </v-btn>
 
-                <v-btn nuxt to="/signup" value="message" class="white">
+                <v-btn nuxt to="/messagepage" value="message" class="white">
                 <span :style="{ fontSize:'0.6rem',marginTop:'0.5rem'}">메시지</span>
                 <v-icon>mdi-email-outline</v-icon>
                 </v-btn>
 
-                <v-btn nuxt to="/profile" value="user" class="white">
+                <v-btn nuxt to="/mypage" value="user" class="white">
                 <span :style="{ fontSize:'0.6rem',marginTop:'0.5rem'}">마이페이지</span>
                 <v-icon>mdi-account-outline</v-icon>
                 </v-btn>
@@ -188,6 +188,7 @@ export default {
 * {
   font-family: "YdestreetB";
 }
+
 
     a {
         display:inline-block;

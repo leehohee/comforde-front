@@ -12,7 +12,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="likeItems.length">
       <v-col>
         <v-slide-group
           v-model="model"
@@ -58,6 +58,9 @@
         </v-slide-group>
       </v-col>
     </v-row>
+    <div v-else class="py-4 text-center">
+      <h4>아직 찜한 서비스가 없어요</h4>
+    </div>
   </div>
 </template>
 

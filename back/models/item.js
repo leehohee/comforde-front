@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull:true,
         },
         title:{
-            type:DataTypes.STRING(40),
+            type:DataTypes.STRING(200),
             allowNull:true,
         },
         modify:{
@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
             type:DataTypes.STRING(40),
             allowNull:true,
         },
+        currenttime:{
+            type:DataTypes.STRING(40),
+            allowNull:true,
+        },
+        
     }, {
         charset:'utf8mb4',
         collate: 'utf8mb4_general_ci',
@@ -34,8 +39,9 @@ module.exports = (sequelize, DataTypes) => {
         db.Item.belongsTo(db.Category);
         db.Item.hasMany(db.Image);
         db.Item.hasMany(db.Image2);
+        db.Item.hasMany(db.Comment2);
         db.Item.belongsToMany(db.User, { through: 'Like3', as: 'Itemlikers'}); //liked 와 대응되는 likers
-        db.Item.belongsTo(db.Order);
+        db.Item.belongsToMany(db.Order,{ through:'Orderlist', as: 'Itemorders'});
     };
     return Item;
 };

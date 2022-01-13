@@ -1,9 +1,9 @@
 <template>
-  <div class="chat_wrap mt-n4 mx-n2">
-    <div class="header">
-        <v-btn @click="onClick">{{chatmainItems.User.nickname}}님과의 메세지</v-btn>
+  <div class="chat_wrap mt-4 mx-n2 mb-14 pb-14">
+    <div class="header" block>
+        {{chatmainItems.User.nickname}}님과의 메세지
     </div>
-    <div class="chat">
+    <div class="chat pt-5">
         <ul>
             <li v-for="(chat, i) in chatList" :key="i">
                 <div :class="{ right: chat.SenderId==me.id }">
@@ -47,18 +47,7 @@
  
     <!-- format -->
  
-    <div class="chat format">
-        <ul>
-            <li>
-                <div class="sender">
-                    <span></span>
-                </div>
-                <div class="message">
-                    <span></span>
-                </div>
-            </li>
-        </ul>
-    </div>
+    
 </div>
 
 
@@ -156,14 +145,14 @@ export default {
              encodeURIComponent(params.id)
              );
     },
-    created() {
-        this.$store.dispatch('posts/chatGet', 
+    // created() {
+    //     this.$store.dispatch('posts/chatGet', 
             
-            this.$route.params.id,
-            );
+    //         this.$route.params.id,
+    //         );
         
         
-    },
+    // },
     mounted() {
         this.scrollToElement();
     }
@@ -172,7 +161,8 @@ export default {
 
 <style scope>
 
-.chat_wrap .header { position: sticky; top:47px; font-size: 14px; padding: 15px 0; background: #F18C7E; color: white; text-align: center;  }
+
+.chat_wrap .header { width:98%; position: fixed; top:47px; font-size: 14px; padding: 15px 0; background: #F18C7E; color: white; text-align: center;  }
  
 .chat_wrap .chat { padding-bottom: 0px; }
 .chat_wrap .chat ul { width: 100%; list-style: none; }
@@ -184,7 +174,7 @@ export default {
 .chat_wrap .chat ul li div > div.sender { margin: 10px 20px 0 20px; font-weight: bold; }
 .chat_wrap .chat ul li div > div.message { display: inline-block; word-break:break-all; margin: 5px 20px; max-width: 75%; border: 1px solid #888; padding: 10px; border-radius: 5px; background-color: #FCFCFC; color: #555;}
  
-.chat_wrap .input-div { position: sticky; bottom: 40px; width: 95vw; background-color: #fff; text-align: center; border-top: 0px solid #888; }
+.chat_wrap .input-div { position: fixed; bottom: 40px; width: 95vw; background-color: #fff; text-align: center; border-top: 0px solid #888; }
 .chat_wrap .input-div > form > textarea { resize: none; width: 75%; height: 80px; border: 0px solid #888 ; padding: 10px; }
 .chat_wrap .input-div > form > textarea:focus { outline:none !important; }
 

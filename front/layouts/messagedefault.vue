@@ -31,7 +31,7 @@
                     
                     <v-spacer></v-spacer>
                     
-                    <v-btn icon @click.stop="drawer = !drawer" :style="{ marginRight:'0px',paddingRight:'0px',display:'flex', alignItems: 'center'}">
+                    <v-btn icon @click.stop="drawer = !drawer" :style="{ opacity:'0',marginRight:'0px',paddingRight:'0px',display:'flex', alignItems: 'center'}">
                             <v-icon>mdi-dots-vertical</v-icon>
                     </v-btn>
                     
@@ -71,7 +71,7 @@
             <v-bottom-navigation
             v-model="value"
             absolute
-            class="white"
+            class="white pt-3"
             :style="{boxShadow: '0 -1.5px 0 0 rgb(0 0 0 / 10%)',paddingRight:'5vw',paddingLeft:'3vw',position:'fixed', top: 'calc(100vh - 56px)',zIndex:'100', width:'100%'}"
             grow
             
@@ -154,6 +154,7 @@ export default {
 * {
   font-family: "YdestreetB";
 }
+
     a {
         display:inline-block;
         text-decoration: none;

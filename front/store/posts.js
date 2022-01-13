@@ -11,7 +11,10 @@ export const state = () => ({
     mainItems:[],
     searchItems:[],
     chatList:[],
+    order:[],
     likeItems:[],
+    sellerOrders:[],
+    buyerOrders:[],
     
 });
 
@@ -26,10 +29,15 @@ export const mutations = {
     addItem(state, payload) {
         
         state.imagePaths = [];
+        state.image2Paths = [];
     },
     chatSend(state, payload) {
         state.chatList.push(payload);
         console.log(state.chatList);
+    },
+    makeOrder(state, payload) {
+        state.order=payload;
+        console.log(state.order);
     },
     chatGet(state, payload) {
         
@@ -53,6 +61,10 @@ export const mutations = {
         const index = state.mainPosts.findIndex(v => v.id === payload.postId);
         state.mainPosts.splice(index, 1);
     },
+    removeMainItem(state, payload){
+        const index = state.mainItems.findIndex(v => v.id === payload.itemId);
+        state.mainItems.splice(index, 1);
+    },
     loadComments(state,payload){
         const index = state.mainPosts.findIndex(v => v.id === payload.postId);
         Vue.set(state.mainPosts[index],'Comments', payload.data);
@@ -64,13 +76,28 @@ export const mutations = {
         const index = state.mainPosts.findIndex(v => v.id === payload.PostId);
         state.mainPosts[index].Comments.unshift(payload);
     },
+    addComment2(state, payload){
+        console.log(payload+'comment payload');
+    },
     loadPost(state, payload) {
-        state.mainItems = [payload];
+        state.mainItems = payload;
         
     },
     loadItem(state, payload) {
         state.mainItems = [payload];
-        
+        console.log(state.mainItems);
+    },
+    loadSellerOrder(state, payload) {
+        state.sellerOrders = payload;
+        console.log(state.sellerOrders+'sellerOrder');
+    },
+    loadBuyerOrder(state, payload) {
+        state.buyerOrders = payload;
+        console.log(state.buyerOrders+'buyerOrder');
+    },
+    loadOrder(state, payload) {
+        state.order = payload;
+        console.log(state.order+'Order into state');
     },
     loadPosts(state, payload){
         if (payload.reset) {
@@ -82,7 +109,7 @@ export const mutations = {
         state.hasMorePost = payload.length === 10;
     },
     loadItems(state, payload){
-        console.log('loadItems');
+        console.log(state.mainItems);
         if (payload.reset) {
             state.mainItems = payload.data;
         } else {
@@ -194,6 +221,29 @@ export const actions = {
             })
         
     },
+    makeChatroom({ commit, state }, payload){
+        //서버에 게시글 등록 요청 보냄
+        
+        this.$axios.post('/user/chatroom',{
+
+            
+            receiverId:payload.receiverId,
+            senderId:payload.senderId,
+
+
+        },{
+            withCredentials: true,
+        })
+            .then((res)=>{
+                console.log('chatroom created!');
+                console.log(res.data);
+              
+            })
+            .catch((err)=>{
+                console.error(err);
+            })
+        
+    },
     chatSend({ commit, state }, payload){
         //서버에 게시글 등록 요청 보냄
         
@@ -227,6 +277,93 @@ export const actions = {
             .then((res)=>{
                 commit('chatGet', res.data);
                 console.log(res.data);
+            })
+            .catch((err)=>{
+                console.error(err);
+            })
+        
+    },
+    loadSellerOrders({ commit, state }, payload){
+        //서버에 게시글 등록 요청 보냄
+        
+        this.$axios.post('/post/loadsellerorder',{
+
+            
+            SellerId : payload.SellerId,
+
+        },{
+            withCredentials: true,
+        })
+            .then((res)=>{
+                console.log('order get');
+                console.log(res.data);
+                commit('loadSellerOrder', res.data);
+            })
+            .catch((err)=>{
+                console.error(err);
+            })
+        
+    },
+    loadBuyerOrders({ commit, state }, payload){
+        //서버에 게시글 등록 요청 보냄
+        
+        this.$axios.post('/post/loadbuyerorder',{
+
+            UserId : payload.UserId,
+            
+
+        },{
+            withCredentials: true,
+        })
+            .then((res)=>{
+                console.log('order get');
+                console.log(res.data);
+                commit('loadBuyerOrder', res.data);
+            })
+            .catch((err)=>{
+                console.error(err);
+            })
+        
+    },
+    loadOrder({ commit, state }, payload){
+        //서버에 게시글 등록 요청 보냄
+        
+        this.$axios.post('/post/loadorder',{
+
+            id : payload.id,
+            
+
+        },{
+            withCredentials: true,
+        })
+            .then((res)=>{
+                console.log('order get');
+                console.log(res.data);
+                commit('loadOrder', res.data);
+            })
+            .catch((err)=>{
+                console.error(err);
+            })
+        
+    },
+    makeOrder({ commit, state }, payload){
+        //서버에 게시글 등록 요청 보냄
+        
+        this.$axios.post('/post/makeorder',{
+
+            
+            itemId : payload.itemId,
+            cost:payload.cost,
+            sellerId:payload.sellerId,
+
+
+        },{
+            withCredentials: true,
+        })
+            .then((res)=>{
+                console.log('order created!');
+                console.log(res.data);
+                commit('makeOrder', res.data);
             })
             .catch((err)=>{
                 console.error(err);
@@ -338,6 +475,17 @@ export const actions = {
             console.error(err);
         });
     },
+    removeItem({ commit }, payload){
+        this.$axios.delete(`/post/${payload.itemId}/item`,{
+            withCredentials: true,
+        })
+        .then(()=>{
+            commit('removeMainItem', payload)
+        })
+        .catch((err)=>{
+            console.error(err);
+        });
+    },
     addComment({commit}, payload){
         this.$axios.post(`/post/${payload.postId}/comment`, {
             content: payload.content,
@@ -345,6 +493,21 @@ export const actions = {
             withCredentials: true,
         }).then((res)=>{
             commit('addComment', res.data);
+        })
+        .catch((err)=>{
+            console.error(err);
+        });
+    },
+    addComment2({commit}, payload){
+        this.$axios.post(`/post/comment2`, {
+            content:payload.content,
+            star:payload.star,
+            ItemId:payload.ItemId,
+            UserId:payload.UserId,
+        }, {
+            withCredentials: true,
+        }).then((res)=>{
+            commit('addComment2', res.data);
         })
         .catch((err)=>{
             console.error(err);

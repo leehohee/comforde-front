@@ -46,7 +46,7 @@
                     >
                         <v-radio
                             label="디자이너로 가입"
-                            value="designerready"
+                            value="designer"
                         ></v-radio>
                         <v-radio
                             label="의뢰인으로 가입"

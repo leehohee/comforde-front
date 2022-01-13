@@ -1,18 +1,8 @@
 <template>
 <div>
             
-            <v-row class="mt-5 mb-5">
-                
-                    <v-img
-                    lazy-src="https://picsum.photos/id/11/10/6"
-                    contain
-                    position="center center"
-                    max-height="84"
-                    src="https://kmong.com/img/main/mobile/img_event_banner@2x.png"
-                    ></v-img>
-                
-            </v-row>
-            <v-row>
+            
+            <v-row class="pt-5">
                 <v-container fluid>
                     <v-row>
                         <v-col class="border-top-solid border-bottom-solid">
@@ -20,9 +10,9 @@
                             class="d-flex justify-space-around"
                             max-width="100%"
                             >
-                                <h5 class="inline-block"><a href="#">서비스 소개</a></h5>
-                                <h5 class="inline-block"><a href="#">FAQ</a></h5>
-                                <h5 class="inline-block"><a href="#">고객센터</a></h5>
+                                <nuxt-link to="/termsofuse">이용약관</nuxt-link>
+                                
+                                <nuxt-link to="/privacy">개인정보처리방침</nuxt-link>
                                 
                                 
 
@@ -41,34 +31,14 @@
                     <v-row>
                         <v-col class="d-flex justify-center text-center">
                             <h5>
-                                (주)컴포디 사업자정보
+                                (주)컴포디
                             </h5>
-                            <v-avatar
-                                class="ma-0 mt-1"
-                                size="10"
-                                tile
-                            >
-                                <v-img
-                                src="https://kmong.com/img/seller/become_seller/ic_become_seller_faq.png"
-                                max-height="10"
-                                ></v-img>
-                            </v-avatar>	
+                            
                             
                         </v-col>
                     </v-row>
                     <v-row></v-row>
-                    <v-row class="pa-0">
-                        <v-col class="pa-0">
-                            <v-col class="text-center" style="fontSize:13px">
-                                <a href="#">사업자정보 확인</a>
-                                <span>|</span>
-                                <a href="#">이용약관</a>
-                                <span>|</span>
-                                <a href="#">개인정보처리방침</a>
-
-                            </v-col>
-                        </v-col>
-                    </v-row>
+                    
                     <v-row class="mb-0 text-center">
                         <v-col cols="6">
                             <a href="https://play.google.com/store/apps/details?id=com.kmong.kmong">

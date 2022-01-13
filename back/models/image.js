@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         db.Image.belongsTo(db.Post);
         db.Image.belongsTo(db.Item);
         db.Image.belongsTo(db.Comment);
+        db.Image.belongsTo(db.Comment2);
         db.Image.belongsTo(db.User);
     };
     return Image;

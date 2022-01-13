@@ -27,7 +27,7 @@
                     
                     <v-spacer></v-spacer>
                     
-                    <v-btn icon @click.stop="drawer = !drawer" :style="{ marginRight:'0px',paddingRight:'0px',display:'flex', alignItems: 'center'}">
+                    <v-btn icon @click.stop="drawer = !drawer" :style="{ opacity:'0',marginRight:'0px',paddingRight:'0px',display:'flex', alignItems: 'center'}">
                             <v-icon>mdi-magnify</v-icon>
                     </v-btn>
                     
@@ -144,7 +144,15 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap');
 
-
+@font-face {
+    font-family: 'YdestreetB';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+  font-family: "YdestreetB";
+}
     a {
         display:inline-block;
         text-decoration: none;

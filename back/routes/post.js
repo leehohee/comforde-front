@@ -95,6 +95,7 @@ router.post('/item', isLoggedIn, async (req, res, next) => {
             status:1,
             CategoryId:categoryName.id,
             UserId: req.user.id,
+            currenttime : db.sequelize.literal('CURRENT_TIMESTAMP'),
         });
         
         if (req.body.image){
@@ -155,6 +156,57 @@ router.post('/chat', isLoggedIn, async (req, res, next) => {
             
         });
         return res.json(fullChat);
+    } catch(err){
+        console.error(err);
+        next(err);
+    }
+});
+router.post('/makeOrder', isLoggedIn, async (req, res, next) => {
+    try{
+        
+        const newOrder = await db.Order.create({
+            status:1,
+            UserId:req.user.id,
+            cost:req.body.cost,
+            SellerId:req.body.sellerId,
+
+        });
+        
+        const fullOrder = await db.Order.findOne({
+            where: {
+                id: newOrder.id
+            },
+            
+        });
+        await fullOrder.addOrdereditem(req.body.itemId);
+        return res.json(fullOrder);
+    } catch(err){
+        console.error(err);
+        next(err);
+    }
+});
+router.post('/chatroom', isLoggedIn, async (req, res, next) => {
+    try{
+        const chatroom = await db.Chatroom.findOne({
+            where:
+                
+                    {UserId: req.body.UserId, receiverId: req.body.receiverId},
+                    
+                
+            
+        });
+        if (!chatroom){
+            const newChatroom = await db.Chatroom.create({
+            
+                UserId: req.body.UserId,
+                receiverId : req.body.receiverId,
+            });
+            return res.json(newChatroom);
+        }
+        return res.send('방이 이미 존재함');
+        
+              
+        
     } catch(err){
         console.error(err);
         next(err);
@@ -281,6 +333,28 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
+
+router.patch('/updateitem', isLoggedIn, async (req,res, next) => {  //put은 통채로 갈아벌이는 것이다.
+    try {
+
+        const updateItem = await db.Item.findOne({
+            where: { id: req.body.id },
+        });
+
+        await updateItem.update({
+            content: req.body.content,
+            
+            cost:req.body.cost,
+            title:req.body.title,
+            currenttime:req.body.currenttime,
+            CategoryId:req.body.CategoryId,
+         });
+         res.json(updateItem);
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+});
 router.get('/:id/item', async (req, res, next) => {
     try {
         const item = await db.Item.findOne({
@@ -299,6 +373,11 @@ router.get('/:id/item', async (req, res, next) => {
         }, {
             model: db.Category,
             attributes: ['name'],
+        },{
+            model :db.Comment2,
+            include:[
+                {model: db.User,}
+            ]
         }
         ],
         });
@@ -308,7 +387,19 @@ router.get('/:id/item', async (req, res, next) => {
         next(err);
     }
 });
-
+router.delete('/:id/item', async (req, res, next)=>{
+    try {
+        await db.Item.destroy({
+            where:{
+                id: req.params.id,
+            }
+        });
+        res.send('삭제했습니다.');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+});
 router.delete('/:id', async (req, res, next)=>{
     try {
         await db.Post.destroy({
@@ -321,7 +412,10 @@ router.delete('/:id', async (req, res, next)=>{
         console.error(err);
         next(err);
     }
-})
+});
+
+
+
 
 router.get('/:id/comments', async (req, res, next) => {
     try {
@@ -345,6 +439,7 @@ router.get('/:id/comments', async (req, res, next) => {
         next(err);
     }
 });
+
 router.get('/:id/userlikeitem', async (req, res, next) => {
     try {
         const user = await db.User.findOne({where:{ id: req.params.id}});
@@ -388,7 +483,115 @@ router.post('/:id/comment', isLoggedIn, async (req, res, next) =>{
         next(err);
     }
 });
-
+router.post('/comment2', isLoggedIn, async (req, res, next) =>{
+    try {
+        const item = await db.Item.findOne({ where : { id: req.body.ItemId} });
+        if(!item){
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+        const newComment2 = await db.Comment2.create({
+            ItemId : item.id,
+            UserId: req.user.id,
+            content: req.body.content,
+            star:req.body.star,
+        });
+        const comment = await db.Comment2.findOne({
+            where : {
+                id : newComment2.id,
+            },
+            include:[{
+                model: db.User,
+                attributes: ['id', 'nickname'],
+            }]
+        });
+        return res.json(comment);
+    } catch (err) {
+        next(err);
+    }
+});
+router.post('/loadbuyerorder', isLoggedIn, async (req, res, next) =>{
+    try {
+        
+        
+        const orders = await db.Order.findAll({
+            where : {
+                UserId : req.body.UserId,
+            },
+            include:[{
+                model: db.User,
+                attributes: ['id', 'nickname'],
+            },{
+                model: db.Item,
+                as: 'Ordereditems',
+                include:[{
+                    model:db.Image,
+                },{
+                    model:db.Image2,
+                }]
+            }]
+        });
+        
+        return res.json(orders);
+    } catch (err) {
+        next(err);
+    }
+});
+router.post('/loadorder', isLoggedIn, async (req, res, next) =>{
+    try {
+        
+        
+        const orders = await db.Order.findAll({
+            where : {
+                id : req.body.id,
+            },
+            include:[{
+                model: db.User,
+                attributes: ['id', 'nickname'],
+            },{
+                model: db.Item,
+                as: 'Ordereditems',
+                include:[{
+                    model:db.Image,
+                },{
+                    model:db.Image2,
+                },{
+                    model:db.User,
+                }]
+            }]
+        });
+        
+        return res.json(orders);
+    } catch (err) {
+        next(err);
+    }
+});
+router.post('/loadsellerorder', isLoggedIn, async (req, res, next) =>{
+    try {
+       
+        
+        orders = await db.Order.findAll({
+            where : {
+                SellerId : req.body.SellerId,
+            },
+            include:[{
+                model: db.User,
+                attributes: ['id', 'nickname'],
+            },{
+                model: db.Item,
+                as: 'Ordereditems',
+                include:[{
+                    model:db.Image,
+                },{
+                    model:db.Image2,
+                }]
+            }]
+        });
+       
+        return res.json(orders);
+    } catch (err) {
+        next(err);
+    }
+});
 router.post('/:id/retweet',isLoggedIn, async (req,res,next)=>{
     try{
         const post = await db.Post.findOne({
@@ -434,6 +637,7 @@ router.post('/:id/retweet',isLoggedIn, async (req,res,next)=>{
                 include: [{
                     model: db.User,
                     attributes: ['id', 'nickname'],
+
                 },{
                     model:db.Image,
                 }],

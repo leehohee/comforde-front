@@ -29,13 +29,13 @@ if (prod){
     app.use(hpp());
     app.use(morgan('combined'));
     app.use(cors({
-        origin: ['http://localhost:3000','http://dothemagic.net:3000','http://221.167.218.93:3000','http://localhost:4000','http://www.comforde.co.kr','http://localhost:80','http://localhost','http://13.124.120.85:80'],
+        origin: ['http://localhost:3000','http://localhost:5000','http://221.167.218.93:3000','http://localhost:4000','http://www.comforde.co.kr','http://localhost:80','http://localhost','http://13.124.120.85:80'],
         credentials: true,
     }));
 } else {
     app.use(morgan('dev'));
     app.use(cors({
-        origin: ['http://localhost:3000','http://dothemagic.net:3000','http://221.167.218.93:3000','http://localhost:4000','http://localhost:80','http://localhost:2525','http://localhost:2552','http://localhost','http://13.124.120.85:80'],
+        origin: ['http://localhost:3000','http://localhost:5000','http://221.167.218.93:3000','http://localhost:4000','http://localhost:80','http://localhost:2525','http://localhost:2552','http://localhost','http://13.124.120.85:80'],
         credentials: true,
     }));
 }

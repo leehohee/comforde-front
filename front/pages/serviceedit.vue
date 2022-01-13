@@ -13,8 +13,13 @@
 </template>
 
 <script>
+import PostForm from '../components/PostForm.vue';
+
 export default {
     layout:'mypagedefault',
+    components: {
+        PostForm,
+    },
     data () {
       return {
         

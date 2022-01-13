@@ -21,7 +21,15 @@
                     
                     <v-toolbar-title>
                         
-                        <nuxt-link to="/"><h4>마이컴포디</h4></nuxt-link>
+                        <nuxt-link to="/">
+                        
+                        <h4 v-if="currentroute=='buyerpage'">구매관리</h4>
+                        <h4 v-else-if="currentroute=='sellerpage'">판매관리</h4>
+                        <h4 v-else-if="currentroute=='myservicepage'">나의 서비스</h4>
+                        <h4 v-else>마이컴포디</h4>
+                        
+                        </nuxt-link>
+                        
                         
                     </v-toolbar-title>
                     
@@ -87,9 +95,9 @@
 
 
 
-
+            <v-fade-transition mode="out-in">    
             <nuxt />
-
+            </v-fade-transition>
 
 
 
@@ -105,7 +113,7 @@
             <v-bottom-navigation
             v-model="value"
             absolute
-            class="white"
+            class="white pt-3"
             :style="{boxShadow: '0 -1.5px 0 0 rgb(0 0 0 / 10%)',paddingRight:'5vw',paddingLeft:'3vw',position:'fixed', top: 'calc(100vh - 56px)',zIndex:'100', width:'100%'}"
             grow
             
@@ -151,10 +159,15 @@ export default {
     data(){
         return {
             hashtag: '',
-            drawer: false,    
+            drawer: false,
+            
         };
     },
-    
+    computed:{
+        currentroute(){
+            return this.$nuxt.$route.path.substr(1);    
+        }
+    },
     
     methods:{
         onSerachHashtag(){

@@ -15,7 +15,7 @@
                         카테고리 > {{mainItems.Category.name}} 
                         </v-list-item-subtitle>
                         <v-list-item-title class="pt-1">
-                        <span style="fontWeight:900"><v-btn @click="onClick">{{mainItems.title}}</v-btn></span>
+                        <h2 style="fontWeight:900">{{mainItems.title}}</h2>
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -31,11 +31,11 @@
                 ></v-rating>
 
                 <div class="pt-1 grey--text ms-1">
-                4.5 (413)
+                5.0 (1)
                 </div>
             </v-row>
             <v-row>
-                {{mainItems.cost.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}} 원
+                {{mainItems.cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} 원
 
             </v-row>
             <v-row class="pt-10">
@@ -54,7 +54,7 @@
                     
                     
                     <v-img
-                      :src="`http://localhost:3065/${mainItems.Images[0].src}`"
+                      :src="`http://localhost:3065/${ mainItems.Image2s.length !== 0 ? mainItems.Image2s[0].src : ''}`"
                       
                     ></v-img>
                     
@@ -108,19 +108,13 @@
                     
             </v-row>        
                     <v-row>
-                      <v-col cols="3">
+                      <v-col cols="6">
                         <div>총작업개수</div>
-                        <div>1984건</div>
+                        <div>1건</div>
                       </v-col>
-                      <v-col cols="3">
-                        <div>만족도</div>
-                        <div>99%</div>
-                      </v-col>
-                      <v-col cols="3">
-                        <div>평균응답시간</div>
-                        <div>1시간 내외</div>
-                      </v-col>
-                      <v-col cols="3">
+                      
+                      
+                      <v-col cols="6">
                         <div>회원구분</div>
                         <div>개인</div>
                       </v-col>
@@ -160,7 +154,7 @@
                         class="ml-n1 mt-2"
                         >
                             <v-rating
-                            :value="4.5"
+                            :value="5"
                             color="amber"
                             dense
                             half-increments
@@ -183,7 +177,7 @@
                             
                             
                         >
-                        <span style="fontWeight:900">1,501개의 평가</span>
+                        <span style="fontWeight:900">1개의 평가</span>
                         </v-btn>
                         </v-card-actions>
                     </div>
@@ -202,7 +196,7 @@
               </v-card>
             
             
-              <v-card elevation="0" class="mt-5 mb-10">
+              <v-card elevation="0" class="mt-5 mb-14">
                 <span>구매후기</span>
                 
                 
@@ -244,7 +238,7 @@ export default {
   computed: {
     mainItems() {
       return this.$store.state.posts.mainItems.find(
-        (v) => v.id === parseInt(this.$route.params.id, 10)
+        v => v.id === parseInt(this.$route.params.id, 10)
       );
     },
   },

@@ -7,9 +7,9 @@
           width="100%"
           class="d-flex-row justify-center align-center"
         >
-          <div class="text-right">
+          <!-- <div class="text-right">
             <v-btn outlined elevation="0" x-small rounded>계정 설정</v-btn>
-          </div>
+          </div> -->
           <div class="d-flex">
             <v-img
               contain
@@ -78,6 +78,7 @@ export default {
         },
         
     },
+    
 
 
 };

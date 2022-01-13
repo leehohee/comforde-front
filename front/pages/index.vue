@@ -41,6 +41,13 @@ import MainFooterMenu from '../components/MainFooterMenu.vue';
 
 
 export default {
+    pageTransition: {
+    name: 'page',
+    mode: 'out-in',
+    beforeEnter (el) {
+      console.log('Before enter...');
+    }
+    },
     components: {
         CategoryMenu,
         LikeServiceMenu,

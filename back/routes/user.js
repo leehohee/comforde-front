@@ -11,7 +11,63 @@ router.get('/', isLoggedIn, async (req,res,next)=>{
     const user = req.user;
     res.json(user);
 });
+router.get('/all', async(req,res, next)=>{
+    try {
+        const users = await db.User.findAll({
+          
+          include: [{
+            model: db.User,
+            as: 'Followings',
+            attributes: ['id'],
+          }, {
+            model: db.User,
+            as: 'Followers',
+            attributes: ['id'],
+          }],
+          attributes: ['id', 'nickname','email','status','createdAt'],
+        });
+        res.json(users);
+      } catch (err) {
+        console.error(err);
+        next(err);
+      }
+});
+router.get('/chatroomlist', async(req,res, next)=>{
+    try {
+        const chatroomlist = await db.User.findOne({
+        where: { id: parseInt(req.user.id, 10) },
+          include: [{
+            model: db.User,
+            as: 'Receivers',
+            attributes: ['id','nickname'],
+          },{
+            model: db.User,
+            as: 'Senders',
+            attributes: ['id','nickname'],
+          } ],
+          attributes: ['id', 'nickname','email','status','createdAt'],
+        });
+        res.json(chatroomlist);
+      } catch (err) {
+        console.error(err);
+        next(err);
+      }
+});
+router.post('/chatroom', isLoggedIn, async (req, res, next) => {
+    const me = await db.User.findOne({
+        where: { id: req.user.id},
+    });
+    await me.addReceiver(req.body.receiverId);
+    res.json(req.body.receiverId);
+});
 
+router.delete('/chatroom', isLoggedIn, async (req, res, next) => {
+    const me = await db.User.findOne({
+        where: { id: req.user.id},
+    });
+    await me.removeFollowing(req.params.id);
+    res.send(req.params.id);
+});
 router.get('/:id', async(req,res, next)=>{
     try {
         const user = await db.User.findOne({
@@ -143,12 +199,14 @@ router.post('/login', (req,res,next)=>{
     })(req,res,next);
 });
 
-router.post('/logout', isLoggedIn, (req,res)=>{
-    if(req.isAuthenticated()){
+router.post('/logout',
+           // isLoggedIn,
+            (req,res)=>{
+    //if(req.isAuthenticated()){
         req.logout();
         req.session.destroy(); //선택사항
         return res.status(200).send('로그아웃 되었습니다');
-    }
+    //}
 });
 
 router.get('/:id/posts', async (req,res,next)=>{
@@ -241,7 +299,24 @@ router.patch('/nickname', isLoggedIn, async (req,res, next) => {  //put은 통�
         next(e);
     }
 });
-
+router.patch('/updateuser', isLoggedIn, async (req,res, next) => {  //put은 통채로 갈아벌이는 것이다.
+    try {
+         const updateuser = await db.User.update({
+            
+            email: req.body.email,
+            nickname:req.body.nickname,
+            status: req.body.status,
+            
+            createdAt: req.body.createdAt,
+         },{
+            where: { id: req.body.id},
+         });
+         res.json(updateuser);
+    } catch (e) {
+        console.error(e);
+        next(e);
+    }
+});
 router.get('/:id/followings', isLoggedIn, async (req,res,next)=>{
     try {
         const user = await db.User.findOne({

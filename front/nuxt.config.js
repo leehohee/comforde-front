@@ -1,4 +1,15 @@
 module.exports = {
+    layoutTransition: {
+        name: 'my-layouts',
+        mode: 'out-in'
+    },
+    pageTransition: {
+        name: 'page',
+        mode: 'out-in',
+        beforeEnter (el) {
+          console.log('Before enter...');
+        }
+    },
     head: {
         
             title: 'COMFORDE',
@@ -96,13 +107,13 @@ module.exports = {
 
     ],
     axios:{
-        browserBaseURL: 'http://api.comforde.co.kr',
-        baseURL: 'http://api.comforde.co.kr',
+        browserBaseURL: 'http://localhost:3065',
+        baseURL: 'http://localhost:3065',
         https: false,
     },
     server:{
         port: process.env.PORT || 80,
-        host: '0.0.0.0'
+        host: '0.0.0.0',
     },
     
 };

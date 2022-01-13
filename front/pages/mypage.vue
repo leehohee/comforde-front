@@ -14,6 +14,13 @@
 import MyComfordeMenu from '~/components/MyComfordeMenu';
 import LoginForm from '~/components/LoginForm';
 export default {
+    pageTransition: {
+    name: 'page',
+    mode: 'out-in',
+    beforeEnter (el) {
+      console.log('Before enter...');
+    }
+    },
     layout:'mypagedefault',
     components:{
         MyComfordeMenu,
@@ -25,6 +32,7 @@ export default {
         },
         
     },
+    
 }
 </script>
 

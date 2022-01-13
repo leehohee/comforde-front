@@ -5,6 +5,7 @@ export const state = () => ({
     hasMoreFollower: true,
     hasMoreFollowing: true,
     other:null, //남의정보
+    chatroomList:[],
     
 });
   
@@ -17,6 +18,10 @@ export const mutations = {
     },
     setOther(state, payload) {
         state.other = payload;
+    },
+    setChatroom(state, payload) {
+        state.chatroomList = payload;
+        console.log(state.chatroomList);
     },
     changeNickname(state, payload){
         state.me.nickname = payload.nickname;
@@ -76,6 +81,20 @@ export const actions = {
         
         
     },
+    async chatroomGet({state, commit}){
+        try{
+            const res = await this.$axios.get('/user/chatroomlist',{
+                withCredentials: true,
+            });
+            commit('setChatroom', res.data);
+            console.log(res.data);
+        }catch(err){
+            console.error(err);
+
+        }
+        
+        
+    },
     async loadOther({commit}, payload){
         try{
             const res = await this.$axios.get(`/user/${payload.userId}`,{
@@ -127,7 +146,7 @@ export const actions = {
         .then((data)=>{
             commit('setMe', null);
         }).catch((err)=>{
-            
+            commit('setMe', null);
             console.error(err);
         });
         

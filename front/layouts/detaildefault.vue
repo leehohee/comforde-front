@@ -28,8 +28,14 @@
                     </v-toolbar-title>
                     
                     <v-spacer></v-spacer>
+
+
+
+
+
+
                     
-                    <v-btn icon @click.stop="drawer = !drawer" :style="{ marginRight:'0px',paddingRight:'0px',display:'flex', alignItems: 'center'}">
+                    <v-btn icon @click.stop="drawer = !drawer" :style="{ opacity:'0',marginRight:'0px',paddingRight:'0px',display:'flex', alignItems: 'center'}">
                             <v-icon>mdi-magnify</v-icon>
                     </v-btn>
                     
@@ -84,15 +90,18 @@
                 </v-row>
             </v-navigation-drawer>
             
+
+
+
             <v-main>
             <v-col cols="12" md="12">
 
 
 
 
-
+            <v-fade-transition mode="out-in">        
             <nuxt />
-
+            </v-fade-transition>
 
 
 
@@ -117,8 +126,11 @@
                 <span :style="{ fontSize:'1rem'}">문의</span>
                 
                 </v-btn>
-                <v-btn rounded nuxt to="/" value="home" class="yellow">
-                <span :style="{ fontSize:'1rem'}"><nuxt-link to="/orderpage">구매</nuxt-link></span>
+
+
+
+                <v-btn rounded value="home" class="yellow" @click="onClickOrder">
+                <span :style="{ fontSize:'1rem'}">구매</span>
                 
                 </v-btn>
 
@@ -145,7 +157,8 @@ export default {
     data(){
         return {
             hashtag: '',
-            drawer: false,    
+            drawer: false,
+            dialog: false,    
         };
     },
     computed: {
@@ -153,7 +166,7 @@ export default {
             return this.$store.state.users.me;
         },
         mainItems(){
-            return this.$store.state.posts.mainItems.find(v => v.id === parseInt(this.$route.params.id, 10));
+            return (this.$store.state.posts.mainItems || []).find(v => v.id === parseInt(this.$route.params.id, 10));
         },
         liked(){
             const me = this.$store.state.users.me;
@@ -177,9 +190,20 @@ export default {
         },
         onClick(){
             console.log(this.mainItems.UserId);
-            this.$router.push({
-                path: `/chat/${encodeURIComponent(this.mainItems.UserId)}`,
-            });
+            this.$store.dispatch('posts/makeChatroom', {
+                    receiverId: this.mainItems.UserId,
+                    senderId: this.me.id,
+                })
+                .then(()=>{
+                    this.$router.push({
+                        path: `/chat/${encodeURIComponent(this.mainItems.UserId)}`,
+                    });
+
+                })
+                .catch(()=>{
+                    alert('문의대화생성실패');
+                });;
+            
         },
         onClickHeart(){
             if(!this.me){
@@ -194,6 +218,26 @@ export default {
             return this.$store.dispatch('posts/likeItem', {
                     itemId: this.mainItems.id,
             });
+
+        },
+        onClickOrder(){
+            if(!this.me){
+                return alert('로그인이 필요합니다.');
+            }
+            this.$store.dispatch('posts/makeOrder', {
+                    itemId: this.mainItems.id,
+                    cost:this.mainItems.cost,
+                    sellerId: this.mainItems.UserId,
+                })
+                .then(()=>{
+                    this.$router.push({
+                        path: `/orderpage/`,
+                    });
+
+                })
+                .catch(()=>{
+                    alert('주문생성실패');
+                });;
 
         },
     },

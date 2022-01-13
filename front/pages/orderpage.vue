@@ -63,7 +63,7 @@
                     <h5>총 서비스 금액</h5>
                     </v-col>
                     <v-col cols="4" class="text-right">
-                    <h5>{{mainItems[0].cost.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}} 원</h5>
+                    <h5>{{mainItems[0].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} 원</h5>
                     </v-col>
                     </v-row>
 
@@ -78,7 +78,7 @@
                     <h5>총 결제 금액</h5>
                     </v-col>
                     <v-col cols="4" class="text-right">
-                    <h4>{{mainItems[0].cost.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}} 원</h4>
+                    <h4>{{mainItems[0].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} 원</h4>
                     </v-col>
                     </v-row>
                 </v-card>
@@ -100,6 +100,7 @@
                 <v-checkbox
                 @click="onClick"
                 required
+                ref="form"
                 v-model="checkbox"
                 label="주문 내용을 확인하였으며, 결제에 동의합니다. (필수)"
                 ></v-checkbox>
@@ -107,7 +108,7 @@
                 <v-row width="100%">
                     <v-col width="100%">
                         <v-btn @click="buyItem" width="100%" class="yellow">
-                            {{mainItems[0].cost.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}}원 결제하기
+                            {{mainItems[0].cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}원 결제하기
                             </v-btn>
                     </v-col>
                 </v-row>
@@ -127,6 +128,11 @@
 import PostImages from '~/components/PostImages';
 export default {
     layout:'orderdefault',
+    data(){
+        return {
+            checkbox:false,
+        }
+    },
     components:{
         PostImages,
     },
@@ -134,10 +140,14 @@ export default {
         mainItems(){
             return this.$store.state.posts.mainItems;
         },
-        
+        Orders(){
+            return this.$store.state.posts.order;
+        },
     },
     methods:{
+        
         buyItem(){
+        if (this.checkbox){
           window.BootPay.request({
             price: this.mainItems[0].cost, //실제 결제되는 가격
             application_id: "619e506ce38c30001ed2bbeb",
@@ -189,10 +199,17 @@ export default {
             //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
             console.log(data);
         });
+
+        }else{
+                alert('주문내용확인을 체크해주세요.');
+            }
         },
+        
 
         onClick(){
             console.log(this.mainItems);
+            console.log(this.checkbox + '이것은체크박스입니다.')
+            console.log(this.Orders+'이것은주문입니다.');
         }
     }
 }

@@ -78,7 +78,28 @@ router.get('/items', async (req, res, next)=>{
             },{
                 model : db.Category,
                 attributes : ['name'],
+            },{
+                model :db.Comment2,
+                include:[
+                    {model: db.User,}
+                ]
             }],
+            order: [['createdAt','DESC']],
+            limit: parseInt(req.query.limit, 10) || 10,
+        });
+        res.json(posts);
+    } catch(err) {
+        console.error(err);
+        next(err);
+    }
+});
+
+router.post('/searchitems', async (req, res, next)=>{
+    try {
+        const wordSplit = req.body.search;
+        const posts = await db.Item.findAll({
+            where : { title: { [db.Sequelize.Op.like]: '%' + wordSplit + '%' } },
+            
             order: [['createdAt','DESC']],
             limit: parseInt(req.query.limit, 10) || 10,
         });

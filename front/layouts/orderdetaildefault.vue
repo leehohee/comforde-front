@@ -1,0 +1,177 @@
+<template>
+    <v-app>
+            
+
+            <v-app-bar
+            class="white"
+            app
+            dense
+            flat
+            outlined
+            justify="space-between"
+            no-gutter
+            :style="{ position:'fixed', top: '0px',zIndex:'100', width:'100%', marginLeft:'0px'}"
+            >
+                
+                    <v-btn v-if="1" @click="goBack" icon :style="{ marginLeft:'0px',paddingLeft:'0px', display:'flex', alignItems: 'center'}">
+                            <v-icon large>mdi-chevron-left</v-icon>
+                    </v-btn>
+                    
+                    
+                    
+                    <v-toolbar-title>
+                        
+                        <nuxt-link to="/">
+                       
+                        <h4>거래정보</h4>
+                        
+                        </nuxt-link>
+                        
+                        
+                    </v-toolbar-title>
+                    
+                    <v-spacer></v-spacer>
+                    <v-btn icon nuxt to="/" :style="{ marginLeft:'0px',paddingLeft:'0px', display:'flex', alignItems: 'center'}">
+                           
+                    </v-btn>
+                    
+                    
+                
+            </v-app-bar>
+            
+                        
+            <v-main>
+            <v-col cols="12" md="12">
+
+
+
+
+            <v-fade-transition mode="out-in">    
+            <nuxt />
+            </v-fade-transition>
+
+
+
+
+
+            </v-col>
+            
+            </v-main>
+
+
+                
+            <v-footer app>
+            <v-bottom-navigation
+            v-model="value"
+            absolute
+            class="white pt-3"
+            :style="{boxShadow: '0 -1.5px 0 0 rgb(0 0 0 / 10%)',paddingRight:'5vw',paddingLeft:'3vw',position:'fixed', top: 'calc(100vh - 56px)',zIndex:'100', width:'100%'}"
+            grow
+            
+            >
+                <v-btn nuxt to="/" class="white">
+                <span :style="{ fontSize:'0.6rem',marginTop:'0.5rem'}"><nuxt-link to="/">홈</nuxt-link></span>
+                <v-icon>mdi-home</v-icon>
+                </v-btn>
+
+                <v-btn nuxt to="/categorypage" class="white">
+                <span :style="{ fontSize:'0.6rem',marginTop:'0.5rem'}">카테고리</span>
+                <v-icon>mdi-view-grid-outline</v-icon>
+                </v-btn>
+
+                <v-btn nuxt to="/likepage" class="white">
+                <span :style="{ fontSize:'0.6rem',marginTop:'0.5rem'}">찜목록</span>
+                <v-icon>mdi-cards-heart-outline</v-icon>
+                </v-btn>
+
+                <v-btn nuxt to="/messagepage" class="white">
+                <span :style="{ fontSize:'0.6rem',marginTop:'0.5rem'}">메시지</span>
+                <v-icon>mdi-email-outline</v-icon>
+                </v-btn>
+
+                <v-btn nuxt to="/mypage" class="white">
+                <span :style="{ fontSize:'0.6rem',marginTop:'0.5rem'}">마이페이지</span>
+                <v-icon>mdi-account-outline</v-icon>
+                </v-btn>
+            </v-bottom-navigation>
+            </v-footer>   
+    </v-app>  
+</template>
+
+<script>
+
+
+export default {
+    components: {
+        
+        
+    },
+    
+    data(){
+        return {
+            hashtag: '',
+            drawer: false,
+            
+        };
+    },
+    computed:{
+        currentroute(){
+            return this.$nuxt.$route.path.substr(1);    
+        },
+        sellerUser(){
+            return this.$store.state.posts.order[0].Ordereditems[0].User.nickname;
+        }
+    },
+    
+    methods:{
+        onSerachHashtag(){
+            this.$router.push({
+                path: `/hashtag/${encodeURIComponent(this.hashtag)}`,
+            });
+            this.hashtag='';
+        },
+        goBack(){
+            this.$router.go(-1); [2]
+        },
+    },
+
+    
+}
+
+</script>
+    
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap');
+
+@font-face {
+    font-family: 'YdestreetB';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+  font-family: "YdestreetB";
+}
+
+    a {
+        display:inline-block;
+        text-decoration: none;
+        color: inherit;
+    }
+    ul {
+        text-decoration: none;
+        list-style: none;
+    }
+    li {
+        text-decoration: none;
+    }
+    h4 {
+        
+        font-weight: 500;
+    }
+    
+
+
+   
+</style>

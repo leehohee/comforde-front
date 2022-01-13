@@ -20,7 +20,7 @@
         v-if="1"
         icon
         nuxt
-        to="/webindex"
+        to="/"
         :style="{
           marginLeft: '0px',
           paddingLeft: '0px',
@@ -108,7 +108,7 @@
                 <v-icon v-text="i+1"></v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title>{{searchItem.content}}</v-list-item-title>
+                <v-list-item-title><nuxt-link :to="'/item/' + searchItem.id">{{searchItem.title}}</nuxt-link></v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-container>
@@ -118,7 +118,9 @@
 
     <v-main>
       <v-col cols="12" md="12">
+        <v-fade-transition mode="out-in">
         <nuxt />
+        </v-fade-transition>
       </v-col>
     </v-main>
 
@@ -127,7 +129,7 @@
         v-model="value"
         absolute
         
-        class="white"
+        class="white pt-3"
         :style="{
           boxShadow: '0 -1.5px 0 0 rgb(0 0 0 / 10%)',
           paddingRight: '5vw',
@@ -228,7 +230,7 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap");
-@import url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2");
+
 @font-face {
     font-family: 'YdestreetB';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2') format('woff2');
